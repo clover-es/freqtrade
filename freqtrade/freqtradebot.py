@@ -45,6 +45,9 @@ class FreqtradeBot(LoggingMixin):
     This is from here the bot start its logic.
     """
 
+    collateral: Optional[Collateral] = None
+    trading_mode: TradingMode = TradingMode.SPOT
+
     def __init__(self, config: Dict[str, Any]) -> None:
         """
         Init all variables and objects the bot needs to work
@@ -126,13 +129,16 @@ class FreqtradeBot(LoggingMixin):
                 for minutes in [0, 15, 30, 45]:
                     t = str(time(time_slot, minutes, 2))
                     self._schedule.every().day.at(t).do(update)
+
         # Start calculating maintenance margin if on cross margin
         # TODO: Add margin_mode to freqtrade.configuration?
-        if self.config.get('collateral') == "cross":
+        if self.collateral_type == Collateral.CROSS:
+
             self.maintenance_margin = MaintenanceMargin(
                 exchange_name=self.exchange.name,
                 trading_mode=self.trading_mode)
-            self.maintenance_margin.run
+
+            self.maintenance_margin.run()
 
     def notify_status(self, msg: str) -> None:
         """
@@ -771,6 +777,9 @@ class FreqtradeBot(LoggingMixin):
         )
         trade.orders.append(order_obj)
 
+        if self.collateral == Collateral.CROSS:
+            self.maintenance_margin.add_new_trade(trade)
+
         Trade.query.session.add(trade)
         Trade.commit()
 
@@ -1386,9 +1395,20 @@ class FreqtradeBot(LoggingMixin):
         # In case of market sell orders the order can be closed immediately
         if order.get('status', 'unknown') in ('closed', 'expired'):
             self.update_trade_state(trade, trade.open_order_id, order)
+
         Trade.commit()
 
+        self._remove_maintenance_trade(trade)
+
         return True
+
+    def _remove_maintenance_trade(self, trade: Trade):
+        """
+            Removes a trade from the maintenance margin object
+            :param trade: The trade to remove from the maintenance margin
+        """
+        if self.collateral == Collateral.CROSS:
+            self.maintenance_margin.remove_trade(trade)
 
     def _notify_exit(self, trade: Trade, order_type: str, fill: bool = False) -> None:
         """
