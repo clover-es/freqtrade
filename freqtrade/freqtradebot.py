@@ -560,7 +560,9 @@ class FreqtradeBot(LoggingMixin):
         if self.collateral_type == Collateral.ISOLATED:
             if self.config['dry_run']:
                 mm_ratio, maintenance_amt = self.exchange.get_maintenance_ratio_and_amt(
-                    pair, amount)
+                    pair,
+                    amount
+                )
                 taker_fee_rate = self.exchange.markets[pair]['taker']
                 isolated_liq = liquidation_price(
                     exchange_name=self.exchange.name,

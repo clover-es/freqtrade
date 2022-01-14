@@ -73,4 +73,4 @@ def test_get_maintenance_ratio_and_amt_gateio(default_conf, mocker, pair, mm_rat
             }
         )
     )
-    assert exchange.get_maintenance_ratio_and_amt(pair) == [mm_ratio, None]
+    assert exchange.get_maintenance_ratio_and_amt(pair) == (mm_ratio, None)
