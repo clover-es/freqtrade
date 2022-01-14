@@ -119,10 +119,25 @@ class Binance(Exchange):
             raise OperationalException(e) from e
 
     @retrier
-    def fill_leverage_brackets(self):
+    def fill_leverage_brackets(self) -> None:
         """
         Assigns property _leverage_brackets to a dictionary of information about the leverage
         allowed on each pair
+        After exectution, self._leverage_brackets = {
+            "pair_name": [
+                [notional_floor, maintenenace_margin_ratio, maintenance_amt],
+                ...
+            ],
+            ...
+        }
+        e.g. {
+            "ETH/USDT:USDT": [
+                [0.0, 0.01, 0.0],
+                [10000, 0.02, 0.01],
+                ...
+            ],
+            ...
+        }
         """
         if self.trading_mode == TradingMode.FUTURES:
             try:
