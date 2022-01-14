@@ -45,12 +45,9 @@ class Gateio(Exchange):
         self,
         pair: str,
         nominal_value: Optional[float] = 0.0,
-    ) -> Tuple[Optional[float], Optional[float]]:
+    ) -> Tuple[float, Optional[float]]:
         """
         :return: The maintenance margin ratio and maintenance amount
         """
         info = self.markets[pair]['info']
-        if 'maintenance_rate' in info:
-            return (float(info['maintenance_rate']), None)
-        else:
-            return (None, None)
+        return (float(info['maintenance_rate']), None)

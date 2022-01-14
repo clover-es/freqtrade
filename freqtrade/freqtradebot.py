@@ -579,7 +579,7 @@ class FreqtradeBot(LoggingMixin):
                     mm_ratio=mm_ratio,
                     taker_fee_rate=taker_fee_rate
 
-                    # Okex
+                    # TODO-lev: Okex parameters
                     # liability: Optional[float]=None,
                     # interest: Optional[float]=None,
                     # position_assets: Optional[float]=None,  # * Might be same as position
