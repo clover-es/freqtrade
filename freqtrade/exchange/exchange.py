@@ -1906,7 +1906,7 @@ class Exchange:
         close_date: Optional[datetime] = None
     ) -> float:
         """
-        calculates the sum of all funding fees that occurred for a pair during a futures trade
+        Calculates the sum of all funding fees that occurred for a pair during a futures trade
         Only used during dry-run or if the exchange does not provide a funding_rates endpoint.
         :param pair: The quote/base pair of the trade
         :param amount: The quantity of the trade
@@ -1966,10 +1966,10 @@ class Exchange:
 
     @retrier
     def get_liquidation_price(self, pair: str):
-        '''
-            Set's the margin mode on the exchange to cross or isolated for a specific pair
-            :param pair: base/quote currency pair (e.g. "ADA/USDT")
-        '''
+        """
+        Set's the margin mode on the exchange to cross or isolated for a specific pair
+        :param pair: base/quote currency pair (e.g. "ADA/USDT")
+        """
         if self._config['dry_run'] or not self.exchange_has("fetchPositions"):
             # Some exchanges only support one collateral type
             return
@@ -1989,9 +1989,9 @@ class Exchange:
         pair: str,
         nominal_value: Optional[float] = 0.0,
     ):
-        '''
-            :return: The maintenance amount, and maintenance margin rate
-        '''
+        """
+        :return: The maintenance amount, and maintenance margin rate
+        """
         # TODO-lev: return the real amounts
         return 0, 0.4
 
